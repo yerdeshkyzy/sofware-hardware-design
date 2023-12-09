@@ -1,0 +1,43 @@
+library ieeelibrary ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
+use std.textio.all;
+
+entity tb_7seg_dec is
+end entity;
+
+architecture dec_arch of tb_7seg_dec is
+	signal number :  in std_logic_vector(3 downto 0);
+	signal segment : out std_logic_vector(6 downto 0);
+
+begin
+	dut: entity work.decoder port map (number => number, segment => segment);
+	
+	test: process
+		constant period : time:= 256 ns;
+		variable l_in : line;
+		variable data_num: std_logic_vector(3 downto 0);
+		variable data_seg: std_logic_vector(6 downto 0);
+
+		file stim_n : text is in "C:\CSCI502\tb_7seg_dec";
+	begin
+		while not endfile(stim_in) loop
+			readline(stim_in, l_in);
+			read(l_in, data_num);
+			read(l_in, data_seg);
+		
+			number <= data_num;
+		
+			wait for period;
+		
+			assert (segment = data_seg)
+			report "failed for input number: " & std_logic_vector(3 downto 0)'image(data_num) severity error;
+		
+		end loop;
+		wait;
+	end process;
+end architecture;
+	
+
+		
+end architecture;
